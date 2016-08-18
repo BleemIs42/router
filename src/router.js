@@ -3,14 +3,15 @@
         console.log("It need jquery!")
         return;
     }
-    
+
     var Router = function(){
         var self = this;
-        this.hashMode = '#';
+        this.hashMode = '#/';
         this.hasInit = false;
 
         this.init = function(){
             this.createEvent();
+            this.getState();
         }
         this.createEvent = function(){
             var parms = {
@@ -28,64 +29,88 @@
                 parms.newUrl = e.newURL || '';
                 parms.newState = e.newURL.split(self.hashMode)[1] || '';
                 window.dispatchEvent(routerEvent);
-                self.go();
+
+                var currState = window.location.href.split(self.hashMode)[1];
+                self.go(currState);
             })
         }
         this.setHashMode = function(value){
-            this.hashMode = value;
+            this.hashMode = value + '/';
             this.init();
         }
         this.on = function(event, cb){
             window.addEventListener(event, function(e){
+                var currState = window.location.href.split(self.hashMode)[1];
                 var parms = e.detail;
-                cb(e, parms);
+                if(currState in self.allState){
+                    cb(e, parms);
+                }
             });
         }
-        this.allState = [];
-        this.state = function(state, tplObj){
-            this.allState.push({
-                state: state,
-                tplObj: tplObj
-            })
-            !this.hasInit && this.initView();
-            return this;
+        this.allState = {};
+        this.config = function(configState){
+            configState(this);
+            for(var key in this.allState){
+                this.initView(key);
+                return;
+            }
         }
-        this.initView = function(){
-            this.hasInit = true;
-            var $viewDom = $('RouterView');
-            if(this.allState[0].tplObj.templateUrl){
-                $viewDom.load(this.allState[0].tplObj.templateUrl);
+        this.getState = function(){
+            var $stateDom = $('a[state]');
+            $stateDom
+                .on('click', function(e){
+                    var state = $(e.target).attr('state');
+                    var currState = window.location.href.split(self.hashMode)[1];
+                    if(currState == state) return;
+                    self.go(state);
+                    return false;
+                })
+                .map(function(index, value){
+                    var state = $(value).attr('state');
+                    if(state in self.allState) return;
+                    self.allState[state] = {};
+                })
+        }
+        this.when = function(state, tplObj){
+            self.allState[state] = tplObj;
+            return self;
+        }
+        this.initView = function(initState){
+            var state;
+            var currState = window.location.href.split(self.hashMode)[1];
+            if(currState && currState != 'undefined'){
+                console.log(currState)
+                state = currState
             }else{
-                $viewDom.html(this.allState[0].tplObj.template);
-            }           
-            var path = window.location.pathname;
-            var url = path + this.hashMode + this.allState[0].state;
-            window.location.href = url;
+                state = initState;
+            }
+            this.go(state);
         }
-        this.go = function(hash){
-            var currHash = hash || window.location.href.split(self.hashMode)[1];
-            var path = window.location.pathname;
+        this.go = function(state){
             var allState = this.allState;
             var $viewDom = $('RouterView');
-            var len = allState.length;
-            for(var i = 0; i < len; i++){
-                if(currHash == allState[i].state){
-                    var cb = allState[i].tplObj.cb || (function(){});
-                    if(allState[i].tplObj.templateUrl){
-                        $viewDom.load(allState[i].tplObj.templateUrl, cb);
-                    }else{
-                        $viewDom.html(allState[i].tplObj.template);
-                        cb();
-                    }
-                    if(hash){
-                        var url = path + '#' + currHash;
-                        window.location.href = url;
-                    }
-                    return;
-                }
-            }       
-            window.location.href = path;
-            $viewDom.html('');
+            if( !(state in allState) ){
+                this.other();
+                return;
+            }
+
+            var cb = allState[state].cb || (function(){});
+            if(allState[state].templateUrl){
+                $viewDom.load(allState[state].templateUrl, cb);
+            }else{
+                $viewDom.html(allState[state].template);
+                cb();
+            }
+
+            var path = window.location.pathname;
+            var url = path + this.hashMode + state;
+            window.location.href = url;
+            this.getState();
+        }
+        this.other = function(state){
+            self.other = function(){
+                self.go(state);
+            }
         }
         this.init();
     }

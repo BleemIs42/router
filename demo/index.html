@@ -12,27 +12,36 @@
 </head>
 <body>
 	<h1>Router</h1>
-	<a href="#/hello">hello</a>
-	<a href="#/name">name</a>
+	<a state="hello">hello</a>
+	<a state="name">name</a>
+    <a state="test">test</a>
+    <a href="lll"></a>
 	<button>go</button>
 	<RouterView></RouterView>
 	<script src="../src/lib/jquery-2.2.3.min.js"></script>
 	<script src="../src/router.js"></script>
 	<script>
 		$(function(){
-			router
-				.state('/hello', {
-					templateUrl: 'tpl/hello.html',
-					cb: function(){}
-				})
-				.state('/name', {
-					templateUrl: 'tpl/name.html',
-					cb: function(){}
-				})
-				.state('/go', {
-					templateUrl: 'tpl/go.html',
-					cb: function(){}
-				})
+			router.config(function(state){
+                state
+                    .when('hello', {
+                        templateUrl: 'tpl/hello.html',
+                        cb: function(){}
+                    })
+                    .when('name', {
+                        templateUrl: 'tpl/name.html',
+                        cb: function(){}
+                    })
+                    .when('go', {
+                        templateUrl: 'tpl/go.html',
+                        cb: function(){}
+                    })
+                    .when('test', {
+                        template: '<h2>Test!</h2>',
+                        cb: function(){}
+                    })
+                    .other('test');
+            })
 		})
 		
 		router.on('routerChanged', function(e, parms){
@@ -41,7 +50,7 @@
 		})
 
 		$('button').on('click', function(){
-			router.go('/go');
+			router.go('go');
 		})
 	</script>
 </body>
