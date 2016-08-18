@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+	<meta name="format-detection" content="telephone=no, email=no"/>
+</head>
+<body>
+	<h1>Router</h1>
+	<a href="#/hello">hello</a>
+	<a href="#/name">name</a>
+	<button>go</button>
+	<RouterView></RouterView>
+	<script src="../src/lib/jquery-2.2.3.min.js"></script>
+	<script src="../src/router.js"></script>
+	<script>
+		$(function(){
+			router
+				.state('/hello', {
+					templateUrl: 'tpl/hello.html',
+					cb: function(){}
+				})
+				.state('/name', {
+					templateUrl: 'tpl/name.html',
+					cb: function(){}
+				})
+				.state('/go', {
+					templateUrl: 'tpl/go.html',
+					cb: function(){}
+				})
+		})
+		
+		router.on('routerChanged', function(e, parms){
+			// console.log(e)
+			console.log(parms)
+		})
+
+		$('button').on('click', function(){
+			router.go('/go');
+		})
+	</script>
+</body>
+</html>
+		
