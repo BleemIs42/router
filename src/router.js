@@ -1,4 +1,9 @@
-;(function(){
+;(function(){    
+    if(typeof $ === 'undefined'){
+        console.log("It need jquery!")
+        return;
+    }
+    
     var Router = function(){
         var self = this;
         this.hashMode = '#';
