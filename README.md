@@ -7,19 +7,23 @@ A router for SAP project, depend  on jQuery.
         state
             .when('hello', {
                 templateUrl: 'tpl/hello.html',
-                cb: function(){}
+                cb: function(state){
+                    //state: current router name
+                    console.log(state) 
+                    //'hello'
+                }
             })
             .when('name', {
                 templateUrl: 'tpl/name.html',
-                cb: function(){}
+                cb: function(state){}
             })
             .when('go', {
                 templateUrl: 'tpl/go.html',
-                cb: function(){}
+                cb: function(state){}
             })
             .when('test', {
                 template: '<h2>Test!</h2>',
-                cb: function(){}
+                cb: function(state){}
             })
             .other('test');
     })

@@ -8,6 +8,7 @@
         var self = this;
         this.hashMode = '#/';
         this.hasInit = false;
+        this.isClick = false;
 
         this.init = function(){
             this.createEvent();
@@ -31,7 +32,9 @@
                 window.dispatchEvent(routerEvent);
 
                 var currState = window.location.href.split(self.hashMode)[1];
-                self.go(currState);
+                if(!self.isClick){
+                    self.go(currState);
+                }
             })
         }
         this.setHashMode = function(value){
@@ -59,6 +62,7 @@
             var $stateDom = $('a[state]');
             $stateDom
                 .on('click', function(e){
+                    self.isClick = true;
                     var state = $(e.target).attr('state');
                     var currState = window.location.href.split(self.hashMode)[1];
                     if(currState == state) return;
@@ -79,33 +83,40 @@
             var state;
             var currState = window.location.href.split(self.hashMode)[1];
             if(currState && currState != 'undefined'){
-                console.log(currState)
                 state = currState
+                this.go(state);
             }else{
                 state = initState;
             }
-            this.go(state);
+
+            this.setUrl(state);
         }
         this.go = function(state){
             var allState = this.allState;
             var $viewDom = $('RouterView');
             if( !(state in allState) ){
+                this.isClick = false;
                 this.other();
                 return;
             }
 
-            var cb = allState[state].cb || (function(){});
+            var cb = allState[state].cb || (function(state){});
             if(allState[state].templateUrl){
-                $viewDom.load(allState[state].templateUrl, cb);
+                $viewDom.load(allState[state].templateUrl, function(){
+                    cb(state);
+                });
             }else{
                 $viewDom.html(allState[state].template);
-                cb();
+                cb(state);
             }
-
+            //change url, trigger onhashchange event
+            this.setUrl(state);
+            this.getState();
+        }
+        this.setUrl = function(state){
             var path = window.location.pathname;
             var url = path + this.hashMode + state;
             window.location.href = url;
-            this.getState();
         }
         this.other = function(state){
             self.other = function(){
