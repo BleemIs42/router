@@ -17,7 +17,7 @@ A router for SAP project, depend  on jQuery.
             cb: function(){}
         })
         .state('/test', {
-            template: '<div>Test!<div>',
+            template: '<div>Test!</div>',
             cb: function(){}
         })
 
@@ -26,8 +26,14 @@ A router for SAP project, depend  on jQuery.
         console.log(parms)
     })
 
+    //default: '#'
+    router.setHashMode('#!');
+
     $('button').on('click', function(){
         router.go('/go');
     })
+
+    //html
+    <a href="#/hello">hello</a>
 
 ```
