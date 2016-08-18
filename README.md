@@ -32,6 +32,9 @@ A router for SAP project, depend  on jQuery.
     })
 
     //html
-    <a href="#/hello">hello</a>
+    <a state="hello">hello</a>
+
+    //Show the view
+    <RouterView></RouterView>
 
 ```
