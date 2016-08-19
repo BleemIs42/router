@@ -12,7 +12,6 @@
 
         this.init = function(){
             this.createEvent();
-            this.getState();
         }
         this.createEvent = function(){
             var parms = {
@@ -53,27 +52,23 @@
         this.allState = {};
         this.config = function(configState){
             configState(this);
+            var $tagA = $('a[state]');
+            this.handleClick($tagA);
+
             for(var key in this.allState){
                 this.initView(key);
                 return;
             }
         }
-        this.getState = function(){
-            var $stateDom = $('a[state]');
-            $stateDom
-                .on('click', function(e){
-                    self.isClick = true;
-                    var state = $(e.target).attr('state');
-                    var currState = window.location.href.split(self.hashMode)[1];
-                    if(currState == state) return;
-                    self.go(state);
-                    return false;
-                })
-                .map(function(index, value){
-                    var state = $(value).attr('state');
-                    if(state in self.allState) return;
-                    self.allState[state] = {};
-                })
+        this.handleClick = function($tagA){
+            $tagA.on('click', function(e){
+                self.isClick = true;
+                var state = $(e.target).attr('state');
+                var currState = window.location.href.split(self.hashMode)[1];
+                if(currState == state) return;
+                self.go(state);
+                return false;
+            })
         }
         this.when = function(state, tplObj){
             self.allState[state] = tplObj;
@@ -102,16 +97,19 @@
 
             var cb = allState[state].cb || (function(state){});
             if(allState[state].templateUrl){
-                $viewDom.load(allState[state].templateUrl, function(){
+                $viewDom.load(allState[state].templateUrl, function(dom){
                     cb(state);
+                    var $tagA = $(dom).find('a[state]');
+                    self.handleClick($tagA);
                 });
             }else{
                 $viewDom.html(allState[state].template);
                 cb(state);
+                var $tagA = $(allState[state].template).find('a[state]');
+                this.handleClick($tagA);
             }
             //change url, trigger onhashchange event
             this.setUrl(state);
-            this.getState();
         }
         this.setUrl = function(state){
             var path = window.location.pathname;
