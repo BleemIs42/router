@@ -70,6 +70,10 @@
                 var state = $(e.target).attr('state');
                 var currState = window.location.href.split(self.hashMode)[1];
                 if(currState == state) return;
+                if( !(state in self.allState) ){
+                    console.error( new Error('Error: Could not resolve ' + state + ' from state ' + currState) );
+                    return;
+                }
                 self.go(state);
                 return false;
             })
