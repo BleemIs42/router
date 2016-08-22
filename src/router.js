@@ -1,6 +1,10 @@
-;(function(){    
+;(function(){ 
+    if(typeof require !== 'undefined'){
+        window.$ = require('jquery');
+    }
+
     if(typeof $ === 'undefined'){
-        console.log("It need jquery!")
+        console.log("It needs jquery!")
         return;
     }
 

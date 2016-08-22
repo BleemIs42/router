@@ -1,0 +1,22 @@
+{
+  "name": "simple-spa-router",
+  "version": "0.0.1",
+  "description": "A router for SAP project, depend  on jquery.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shafley/router.git"
+  },
+  "author": "Shafley",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Shafley/router/issues"
+  },
+  "homepage": "https://github.com/Shafley/router#readme",
+  "dependencies": {
+    "jquery": "^3.1.0"
+  }
+}

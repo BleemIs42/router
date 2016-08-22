@@ -1,5 +1,5 @@
 # Router #
-A router for SAP project, depend  on jQuery.
+A router for SAP project, depend  on jquery.
 
 # Use #
 ```javascript
